@@ -13,9 +13,9 @@ $LOAD_PATH << File.dirname(__FILE__) # require_relative対策
 # どどんとふ名前空間
 module DodontoF
   # バージョン
-  VERSION = '1.48.30'
+  VERSION = '1.48.32.1'
   # リリース日
-  RELEASE_DATE = '2017/08/17'
+  RELEASE_DATE = '2017/11/19'
 
   # バージョンとリリース日を含む文字列
   #
@@ -2327,6 +2327,8 @@ SQL_TEXT
   def getLoginInfo()
     @logger.debug("getLoginInfo begin")
     
+    params = getParamsFromRequestData()
+    uniqueId = params['uniqueId']
     uniqueId ||= createUniqueId()
     
     allLoginCount, loginUserCountList = getAllLoginCount()
@@ -2752,7 +2754,7 @@ SQL_TEXT
     @logger.debug("makeDefaultSaveFileForAllSave Begin")
     @logger.debug(dir, "makeDefaultSaveFileForAllSave dir")
     
-    extension = "sav"
+    extension = @@saveFileExtension
     result = saveSelectFilesFromSaveDataAll(saveDataAll, extension)
     
     from = result["saveFileName"]
@@ -2799,9 +2801,12 @@ SQL_TEXT
   end
   
   
+  @@saveFileExtension = "sav"
+  @@mapSaveFileExtension = "msv"
+  
   def save()
     isAddPlayRoomInfo = true
-    extension = getRequestData('extension')
+    extension = @@saveFileExtension
     
     addInfos = {}
     addInfos[$diceBotTableSaveKey] = getDiceTableData()
@@ -2819,7 +2824,7 @@ SQL_TEXT
   
   
   def saveMap()
-    extension = getRequestData('extension')
+    extension = @@mapSaveFileExtension
     selectTypes = ['map', 'characters']
     saveSelectFiles( selectTypes, extension)
   end

@@ -80,6 +80,11 @@ package {
             return ( targetStrictlyId == getStrictlyUniqueId() );
         }
         
+        public function isOwnUniqueIdByStrictlyId(targetStrictlyId:String):Boolean {
+            var targetId:String = getUniqueIdFromStrictlyUniqueId(targetStrictlyId);
+            return ( targetId == this.uniqueId );
+        }
+        
         public function setRefreshTimeout(timeout:Number):void {
             this.refreshTimeoutSecond = timeout;
         }
@@ -159,12 +164,12 @@ package {
         }
         
         public function save(resultFunction:Function):void {
-            var obj:Object = getParamObject("save", saveFileExtension, "extension")
+            var obj:Object = getParamObject("save")
             sendCommandData(obj, resultFunction);
         }
         
         public function saveMap(resultFunction:Function):void {
-            var obj:Object = getParamObject("saveMap", mapSaveFileExtension, "extension")
+            var obj:Object = getParamObject("saveMap")
             sendCommandData(obj, resultFunction);
         }
         
@@ -543,6 +548,16 @@ package {
             
             sendCommandData(obj);
             Log.logging("drawLineOnMap End");
+        }
+        
+        public function convertDrawToImage(fileData:Object):void {
+            var data:Object = {
+                "tagInfo" : {"roomNumber": saveDataDirIndex},
+				"fileData" : fileData
+            };
+            var obj:Object = getParamObject("convertDrawToImage", data);
+            
+            sendCommandData(obj);
         }
         
         public function clearDrawOnMap():void {
@@ -1560,7 +1575,7 @@ package {
             Log.logging("sendCommandData obj : ", obj);
             
             if( isStopRefreshOn ) {
-                Log.loggingFatalError(Language.s.refreshStopedError);
+                Log.logging(Language.s.refreshStopedError);
                 return;
             }
             
